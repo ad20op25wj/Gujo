@@ -7,11 +7,21 @@
 
 #define GROUND '='
 #define HOLE ' '
+#define A 10 // Ground Altitude
+#define P 10
 
-#define DIFFICULTY 10
+#define PROBABLITY 10
 #define HOLE_WIDTH 10
-#define REST_WIDTH 30
+#define REST_WIDTH 10
 #define USEC 50000 // 0.05 sec
+
+// j means jump
+#define PRINT_KNU(j) move(LINES-(A+3+(j)), P); \
+	addch('K');\
+	move(LINES-(A+2+(j)), P); \
+	addch('N');\
+	move(LINES-(A+1+(j)), P); \
+	addch('U')
 
 int i;
 int left_hole = 0;
@@ -40,6 +50,9 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
+		// put Hobanu on the ground
+		PRINT_KNU(0);
+
 		// print the ground
 		move(LINES-10, 0);
 		addstr(land);
@@ -66,7 +79,7 @@ void map_constructor(void) // update the ground
 	for (i = 0; i < w.ws_col-1; i++)
 		land[i] = land[i+1];
 
-	if (!(rand() % DIFFICULTY) && left_times_to_jump_or_rest <= 0)
+	if (!(rand() % PROBABLITY) && left_times_to_jump_or_rest <= 0)
 	// make probablity 1/DIFFICULTY
 	{
 		left_hole = HOLE_WIDTH;
