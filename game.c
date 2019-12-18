@@ -51,6 +51,9 @@ void checkJumpPressed(void);
 // View
 int main(int argc, char *argv[])
 {
+	int score = 0;
+	int cnt = 0;
+	char buffer[20];
 	// Get terminal size(lenght, width)
 	ioctl(0, TIOCGWINSZ, &w);
 	land = malloc(sizeof(*land) * (w.ws_col+1));
@@ -67,8 +70,16 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
+		
+		if(cnt++%50==0)// scoreup speed lower
+			score++;
 		// put Hobanu on the ground
 		PRINT_HOBANU(jump_height);
+
+		move(1, 1);
+		addstr("Score :");
+		sprintf(buffer,"%d", score);
+		addstr(buffer);
 
 		// print the ground
 		move(LINES-A, 0);
@@ -92,8 +103,7 @@ int main(int argc, char *argv[])
 	endwin(); // <curses.h>
 
 	free(land);
-
-	return 0;
+	return score;
 }
 
 void Hobanu_renderer(void) // update Hobanu
