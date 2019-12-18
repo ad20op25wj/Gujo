@@ -54,6 +54,8 @@ int main(int argc, char *argv[])
 	int score = 0;
 	int cnt = 0;
 	char buffer[20];
+	FILE *fp;
+
 	// Get terminal size(lenght, width)
 	ioctl(0, TIOCGWINSZ, &w);
 	land = malloc(sizeof(*land) * (w.ws_col+1));
@@ -71,13 +73,15 @@ int main(int argc, char *argv[])
 	while (1)
 	{
 		
-		if(cnt++%50==0)// scoreup speed lower
+		if(!(cnt++ % 10)) // make score increment speed lower
 			score++;
+
 		// put Hobanu on the ground
 		PRINT_HOBANU(jump_height);
 
+		// put score on the terminal
 		move(1, 1);
-		addstr("Score :");
+		addstr("Score: ");
 		sprintf(buffer,"%d", score);
 		addstr(buffer);
 
@@ -92,13 +96,22 @@ int main(int argc, char *argv[])
 		if (jump_height == 0 && land[P] == ' ')
 			break;
 
+        	if (jump_height != 0 && land[P] == ' ') // 홀에서 점프시 점수 추가획득
+			score += 10 / HOLE_WIDTH;
+
 		Hobanu_renderer(); // update Hobanu
 		map_constructor(); // update the ground
 
 		usleep(USEC); // sleep for USEC
 	}
 
-	sleep(5);
+	fp = fopen("SCORE.txt","wt");
+	fprintf(fp, "%d", score);
+
+	if (fp != NULL)
+		fclose(fp);
+
+	sleep(3);
 
 	endwin(); // <curses.h>
 
